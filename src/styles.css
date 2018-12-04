@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+
+body
+{
+    font-family: 'Maven Pro', sans-serif;
+}
+
+@media (max-width: 767px)
+{
+     body
+     {
+        font-size: 12px; 
+     }  
+}
+
+@media (max-width: 575px)
+{
+    body
+    {
+       font-size: 10px; 
+    } 
+	
+}

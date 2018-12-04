@@ -1,0 +1,93 @@
+<div class="container">
+
+  <!-- Navbar -->
+
+  <nav class="navbar navbar-dark bg-dark">
+    <span class="navbar-brand mb-0 h1">Crypto-Watch</span>
+  </nav>
+
+  <!-- Navbar end -->
+
+  <!-- this row contain fav checkbox / price-range-bar / marketcap-range-bar -->
+
+  <div class="row" style="margin-top:20px; margin-bottom:20px;">
+
+    <!-- favourite checkbox -->
+    <div class="col-md-4 col-sm-12" style="padding-top:20px;">
+      <div class="checkbox">
+        <label><input type="checkbox" [checked]="showOnlyFavorites" (change)="showFavoritesChange()">Show only Favorites
+        </label>
+      </div>
+      <div *ngIf="compareView">
+          <button class="btn btn-primary" (click)="compareCurrencyHandler()">Compare</button>
+        </div>
+    </div>
+
+    <!-- price-range-bar -->
+    <div class="col-md-4 col-sm-6 priceRangeFont">
+      <div>Price Range</div>
+      <div>
+        <ng5-slider [(value)]="minPriceRange" [(highValue)]="maxPriceRange" [options]="priceRangeOptions" (userChangeEnd)="onPriceChangeEnd($event)"></ng5-slider>
+      </div>
+    </div>
+
+    <!-- marketcap-range-bar -->
+    <div class="col-md-4 col-sm-6 marketcapRangeFont">
+      <div>Marketcap Range</div>
+      <div>
+        <ng5-slider [(value)]="minMarketcapRange" [(highValue)]="maxMarketcapRange" [options]="marketcapRangeOptions" (userChangeEnd)="onMarketcapChangeEnd($event)"></ng5-slider>
+      </div>
+    </div>
+  </div>
+
+  <!-- fav checkbox / price-range-bar / marketcap-range-bar row end -->
+
+  <div class="row">
+    <div class="col-12">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th *ngIf="compareView"></th>
+              <th scope="col">Fav.</th>
+              <th scope="col">#</th>
+              <th scope="col" style="text-align:left;">Name</th>
+              <th scope="col" style="text-align:right; cursor:pointer;" (click)="sortByMarketcap()"><span [ngClass]="{'hide': marketSortAsc == 'false'}"><i
+                    class="fas fa-sort-down"></i></span><span [ngClass]="{'hide': marketSortDec == 'false'}"><i class="fas fa-sort-up"></i></span>
+                Market cap</th>
+              <th scope="col" style="text-align:right; cursor: pointer;" (click)="sortByPrice()"><span [ngClass]="{'hide': priceSortAsc == 'false'}"><i
+                    class="fas fa-sort-down"></i></span><span [ngClass]="{'hide': priceSortDec == 'false'}"><i class="fas fa-sort-up"></i></span>
+                Price</th>
+              <th scope="col" style="text-align:right;">Change(24h)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let data of filteredData' long-press (onLongPress)="initComapareView()" (press)="initComapareView()">
+              <td *ngIf="compareView">
+                <input type="checkbox" (change)="manageComparisionList(data.id)">
+              </td>
+              <td><i class="fas fa-star" (click)='markAsFav(data.id)' [ngClass]="getFavouriteClass(data.id)"></i></td>
+              <td scope="row">{{data.rank}}</td>
+              <td style="text-align:left;"><span class="text-primary" style="cursor:pointer;" [routerLink]="['/priceChart',data.id]">{{data.name}}</span></td>
+              <td style="text-align:right;">${{data.quotes.USD.market_cap}}</td>
+              <td style="text-align:right;">${{data.quotes.USD.price}}</td>
+              <td style="text-align:right;" [ngClass]="{'negative': data.quotes.USD.percent_change_24h != 0, 'positive': data.quotes.USD.percent_change_24h > 0}">{{data.quotes.USD.percent_change_24h}}%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-container>
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" [ngClass]="{'disabled': crypto_Page_Start == 1 || crypto_Page_Start == 2, 'enable': crypto_Page_Start > 2}">
+              <a class="page-link" tabindex="-1" (click)="getPreviousPageData()"><b>Previous</b></a>
+            </li>
+            <li class="page-item" [ngClass]="{'disabled': disableCounter == totalCryptoCurrencyPage, 'enable': crypto_Page_Start > 0}">
+              <a class="page-link" (click)="getNextPageData()"><b>Next</b></a>
+            </li>
+          </ul>
+        </nav>
+      </ng-container>
+    </div>
+  </div>
+</div>
